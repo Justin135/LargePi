@@ -10,7 +10,7 @@
 char * addNums(char x[], char y[]);
 char * addNums(char x[], char y[]) {
     
-    int length = MAX(strlen(x), strlen(y)) + 1; // Get the max length of the strings.
+    long long int length = MAX(strlen(x), strlen(y)) + 1; // Get the max length of the strings.
     char * sum = (char *) malloc((length + 1) * sizeof(char)); // Allocate the memory for the new sum variable.
     
     if(sum == NULL) {
@@ -59,8 +59,8 @@ char * addNums(char x[], char y[]) {
     return sum;
 }
 
-char * exponent10(int n);
-char * exponent10(int n) {
+char * exponent10(long long int n);
+char * exponent10(long long int n) {
     
     char * value = (char *) malloc((n + 2) * sizeof(char)); // Allocate n + 2 (1 for \0 and 1 for the first digit being 1);
     
@@ -71,31 +71,60 @@ char * exponent10(int n) {
     return value;
 }
 
-char * calculatePi(int limit);
-char * calculatePi(int limit) {
+char * intDivision(char x[], long long int n);
+char * intDivision(char x[], long long int n) {
     
-    char * pi = malloc(limit * sizeof(char));
+    unsigned long long int drawdown = 0;
+    int sub = 0;
     
-    return pi;
+    long long int length = strlen(x); // Length of new array.
+    char * quotient = (char *) malloc((length + 1) * sizeof(char));
+    memset(quotient, '!', length * sizeof(char)); // Set all values to '!'
+    quotient[length] = '\0'; // Manually set the null terminator.
+    
+    long long int k = 0;
+    
+    for(long long int i = 0;i < length;i++) {
+        
+        drawdown *= 10; // Multiply current drawdown by 10.
+        drawdown += (x[i] - 48); // Add next digit.
+        
+        if(drawdown >= n) {
+            
+            // drawdown / n can be accomplished.
+            quotient[k] = ((drawdown / n) + 48); // Save quotient value.
+            k++; // Increment k.
+            sub = n * (drawdown / n);
+            drawdown -= sub; // Carry out long division subtraction.
+            
+            printf("%d\t\t%c\n", (drawdown / n), quotient[k - 1]);
+        }
+        
+        printf("D%d\n", drawdown);
+    }
+    
+    printf("%s\n", quotient);
+   
+    if(k < length) {
+        
+        char * new_quotient = (char *) malloc((k + 1) * sizeof(char));
+        
+        for(int i = 0;i < k;i++) {
+            new_quotient[i] = quotient[i];
+        }
+        
+        new_quotient[k] = '\0';
+        
+        free(quotient);
+        return new_quotient;
+    }
+    
+    return quotient;
 }
+
 
 int main(void) {
     
-    char * pi = calculatePi(LIMIT);
-    
-    char num = '9';
-    int nums = num - 48;
-    
-    char x[7] = "942345";
-    char y[9] = "63456512";
-    char * z = addNums(x, y);
-    
-    printf("\n%s\n", z);
-    
-    char * n = exponent10(5);
-    printf("%s\n", n);
-    free(z);
-    free(pi);
     
     return 0;
 }
