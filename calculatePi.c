@@ -59,6 +59,76 @@ char * addNums(char x[], char y[]) {
     return sum;
 }
 
+char * subtractNums(char x[], char y[]);
+char * subtractNums(char x[], char y[]) {
+    
+    long long int length = MAX(strlen(x), strlen(y)); // Get the max length of the strings.
+    char * minus = (char *) malloc((length + 1) * sizeof(char)); // Allocate the memory for the new sum variable.
+    
+    if(minus == NULL) {
+        exit(1); // malloc didn't work. Memory not allocated.
+    }
+    
+    
+    memset(minus, '0', length * sizeof(char)); // Allocates and sets memory to '0'.
+    minus[length] = '\0'; // Manually set the null terminator.
+    
+    int i = strlen(x) - 1;
+    int j = strlen(y) - 1;
+    int k = strlen(minus) - 1;
+    int d, borrow = 0;
+    
+    // Iterate through both numbers.
+    while(i >= 0 && j >= 0) {
+        d = (x[i] - 48) - (y[j] - 48) - borrow;
+        
+        if(d < 0) {
+            borrow = 1;
+            d += 10;
+        }
+        else {
+            borrow = 0;
+        }
+        minus[k] = (d) + 48;
+        
+        i--;
+        j--;
+        k--;
+    }
+    
+    // If there are still more digits in the first number.
+    while(i >= 0) {
+        minus[k] = x[i];
+        i--;
+        k--;
+    }
+    
+    minus[0] -= borrow;
+    
+    /*
+    if(minus[0] == '0') {
+        
+        int num0 = 1; // Count the number of 0s.
+        for(int i = 1;minus[i] != '0';i++) {
+            num0++;
+        }
+        
+        char * new_minus = (char *) malloc((length - num0 + 1) * sizeof(char));
+        
+        for(int i = num0;i < length;i++) {
+            new_minus[i] = minus[i];
+        }
+        
+        new_minus[length - num0] = '\0';
+        
+        free(minus);
+        return new_minus;
+    }
+    */
+    
+    return minus;
+}
+
 char * exponent10(long long int n);
 char * exponent10(long long int n) {
     
@@ -69,6 +139,31 @@ char * exponent10(long long int n) {
     value[0] = '1';
     
     return value;
+}
+
+char * multiply(char x[], int n);
+char * multiply(char x[], int n) {
+    
+    long long int length = (strlen(x) + ceil(log10(n))); // Length of new array.
+    char * product = (char *) malloc((length + 1) * sizeof(char));
+    memset(product, '!', length * sizeof(char)); // Set all values to '!'
+    product[length] = '\0'; // Manually set the null terminator.
+    
+    int k = length - 1;
+    int i = strlen(x) - 1;
+    int prod = 0;
+    int carry = 0;
+    
+    while(i >= 0) {
+        
+        prod = ((x[i] - 48) * n) + carry;
+        carry = (prod / 10);
+        product[k] = (prod % 10) + 48;
+        i--;
+        k--;
+    }
+    
+    return product;
 }
 
 char * intDivision(char x[], long long int n);
@@ -125,6 +220,11 @@ char * intDivision(char x[], long long int n) {
 
 int main(void) {
     
+    char a[] = "12345";
+    char b[] = "345";
     
+    char * c = subtractNums(a, b);
+    
+    printf("%s\n", c);
     return 0;
 }
