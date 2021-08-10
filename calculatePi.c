@@ -144,25 +144,49 @@ char * exponent10(long long int n) {
 char * multiply(char x[], int n);
 char * multiply(char x[], int n) {
     
-    long long int length = (strlen(x) + ceil(log10(n))); // Length of new array.
+    long long int length = (strlen(x) + floor(log10(n)) + 1); // Length of new array.
     char * product = (char *) malloc((length + 1) * sizeof(char));
+    
+    if(product == NULL) {
+        exit(1); // malloc didn't work. Memory not allocated.
+    }
+    
     memset(product, '!', length * sizeof(char)); // Set all values to '!'
     product[length] = '\0'; // Manually set the null terminator.
     
-    int k = length - 1;
+    int k = strlen(product) - 1;
     int i = strlen(x) - 1;
     int prod = 0;
     int carry = 0;
+    int tempN = n; // Used for the multiplication so as to not overwrite the original n.
     
-    while(i >= 0) {
+    while(k >= 0) {
         
-        prod = ((x[i] - 48) * n) + carry;
-        carry = (prod / 10);
+        prod = 0; // Initialize product.
+        tempN = n; // Reinitialize tempN.
+        
+        for(int j = 0;tempN != 0;j++) {
+            
+            if((i + j) < 0) {
+                tempN /= 10;
+                continue;
+            }
+            
+            if((k + j) >= length) 
+                break;
+            
+            prod += ((x[i + j] - 48) * (tempN % 10)); // Carry out the multiplication with the (j+1)th rightmost digit of n.
+            tempN /= 10; // Divide tempN by 10.
+        }
+        
+        prod += carry;
+        carry = (prod / 10); // Get the carryover.
         product[k] = (prod % 10) + 48;
         i--;
         k--;
     }
     
+    product[0] = carry + 48; // Set the leftmost digit to the carry.
     return product;
 }
 
@@ -220,11 +244,17 @@ char * intDivision(char x[], long long int n) {
 
 int main(void) {
     
-    char a[] = "12345";
-    char b[] = "345";
+    char a[] = "72345";
+    char b[] = "2346";
     
     char * c = subtractNums(a, b);
+    char * d = multiply(a, 123);
     
     printf("%s\n", c);
+    printf("%s\n", d);
+    
+    free(c);
+    free(d);
+    
     return 0;
 }
