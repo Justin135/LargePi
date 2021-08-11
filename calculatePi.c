@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define LIMIT 10
 #define MAX(a, b) (( a > b ) ? a : b) // Get the max of two numbers.
@@ -208,6 +209,11 @@ char * intDivision(char x[], long long int n) {
         drawdown *= 10; // Multiply current drawdown by 10.
         drawdown += (x[i] - 48); // Add next digit.
         
+        if(drawdown == 0) {
+            quotient[k] = '0';
+            k++;
+        }
+        
         if(drawdown >= n) {
             
             // drawdown / n can be accomplished.
@@ -216,13 +222,13 @@ char * intDivision(char x[], long long int n) {
             sub = n * (drawdown / n);
             drawdown -= sub; // Carry out long division subtraction.
             
-            printf("%d\t\t%c\n", (drawdown / n), quotient[k - 1]);
+            //printf("%d\t\t%c\n", (drawdown / n), quotient[k - 1]);
         }
         
-        printf("D%d\n", drawdown);
+        //printf("D%d\n", drawdown);
     }
     
-    printf("%s\n", quotient);
+    //printf("%s\n", quotient);
    
     if(k < length) {
         
@@ -241,20 +247,75 @@ char * intDivision(char x[], long long int n) {
     return quotient;
 }
 
+bool is0(char * number);
+bool is0(char * number) {
+    
+    for(int i = 0;i < strlen(number);i++) {
+        
+        if(number[i] != '0') {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+char * arctan(int d, int numDigits);
+char * arctan(int d, int numDigits) {
+    
+    long long int length = numDigits + 1;
+    char * total  = exponent10(numDigits); // Use the 10^x function.
+    char * term  = exponent10(numDigits); // Use the 10^x function.
+    long long int n = 0;
+    
+    printf("%s\n", total);
+    total = intDivision(total, d);
+    
+    printf("%s\n", total);
+    
+    while(!is0(term)) {
+        
+        n++;
+        term = intDivision(term, (-d * d));
+        
+        char * temp = intDivision(term, (2*n + 1));
+        total = addNums(total, temp);
+        
+        free(temp);
+        temp = NULL;
+    }
+    
+    /*
+    while term != 0:
+        n += 1
+        term //= -d*d
+        total += term // (2*n + 1)
+    */
+   
+   return total;
+}
 
 int main(void) {
     
-    char a[] = "72345";
-    char b[] = "2346";
+    int xdigits = 10;
+    int numDigits = 10;
     
-    char * c = subtractNums(a, b);
-    char * d = multiply(a, 123);
+    char * arc1 = arctan(5, xdigits + numDigits);
+    arc1 = multiply(arc1, 4);
     
-    printf("%s\n", c);
-    printf("%s\n", d);
+    char * arc2 = arctan(239, xdigits + numDigits);
+    char * pi = subtractNums(arc1, arc2);
     
-    free(c);
-    free(d);
+    pi = multiply(pi, 4);
+    printf("%s\n", pi);
+    
+    free(pi);
+    free(arc1);
+    free(arc2);
+    
+    pi = NULL;
+    arc1 = NULL;
+    arc2 = NULL;
     
     return 0;
 }
